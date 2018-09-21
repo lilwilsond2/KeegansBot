@@ -16,7 +16,7 @@ def armor_lookup(skill: str):
     filteredArmor = []
     for armorPiece in apiObjects:
         for armorSkill in armorPiece['skills']:
-            if armorSkill['skillName'] == skill:
+            if armorSkill['skillName'].lower() == skill.lower():
                 filteredArmor.append(armorPiece)
     output = [armorPiece['name'] for armorPiece in filteredArmor]
     return output
@@ -34,7 +34,7 @@ async def hunt(ctx, monsterName: str):
 
 
 @bot.command()
-async def armor(ctx, skill: str):
+async def armor(ctx, *, skill: str):
     """Finds all armor that has given skill"""
     await ctx.send(armor_lookup(skill))
 
