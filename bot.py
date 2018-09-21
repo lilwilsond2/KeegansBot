@@ -13,7 +13,7 @@ async def on_ready():
     print('hi')
 
 @bot.command()
-async def hunt(ctx, monsterName: str):
+async def hunt(ctx, *, monsterName: str):
     """Looks up a monster and displays it's weaknesses."""
     await ctx.send(getFormattedMonsterOutput(monsterName))
 
