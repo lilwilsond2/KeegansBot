@@ -37,5 +37,10 @@ async def bees(ctx):
     """Talks about bees"""
     await ctx.send('Get on that shit yo!')
 
-
+@bot.command()
+async def menu(ctx):
+    """Displays commands"""
+    await ctx.send('!hunt')
+    await ctx.send('!armor')
+    await ctx.send('!bees')
 bot.run(settings.config.TOKEN)
