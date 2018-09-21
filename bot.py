@@ -24,6 +24,7 @@ def armor_lookup(skill: str) -> list:
             if armorSkill['skillName'].lower() == skill.lower():
                 filteredArmor.append(armorPiece)
     output = [armorPiece['name'] for armorPiece in filteredArmor]
+    output.sort()
     return output
 
 
