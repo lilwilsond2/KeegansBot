@@ -1,62 +1,27 @@
-import json
-
-import requests
 from discord.ext import commands
 
-import settings.config
+from armor import getFormattedArmorOutput
+from monsters import getFormattedMonsterOutput
+from settings.config import TOKEN
 
 description = '''a dumb bot'''
 bot = commands.Bot(command_prefix='!', description=description)
-
-
-def armor_lookup(skill: str) -> list:
-    """
-    Looks up armor pieces for a skill from mhw-db.com
-    :param skill: skill to lookup
-    :return: list of armor names
-    """
-    apiObjects = getArmors()
-    output = filterArmors(apiObjects, skill)
-    return output
-
-
-def getArmors():
-    requestUrl = "https://mhw-db.com/armor?p={\"name\": true, \"skills.skillName\": true, \"skills.level\": true}"
-    apiData = requests.get(requestUrl).text
-    apiObjects = json.loads(apiData)
-    return apiObjects
-
-
-def filterArmors(apiObjects, skill) -> list:
-    filteredArmor = []
-    for armorPiece in apiObjects:
-        for armorSkill in armorPiece['skills']:
-            if armorSkill['skillName'].lower() == skill.lower():
-                filteredArmor.append(armorPiece)
-    output = [armorPiece['name'] for armorPiece in filteredArmor]
-    output.sort()
-    return output
 
 
 @bot.event
 async def on_ready():
     print('hi')
 
-
 @bot.command()
 async def hunt(ctx, monsterName: str):
     """Looks up a monster and displays it's weaknesses."""
-    await ctx.send('we\'re looking for the ' + monsterName + ' monster right now')
+    await ctx.send(getFormattedMonsterOutput(monsterName))
 
 
 @bot.command()
 async def armor(ctx, *, skill: str):
     """Finds all armor that has given skill"""
-    armorPieces = armor_lookup(skill)
-    output = armorPieces.pop(0)
-    for armorPiece in armorPieces:
-        output += "\n{}".format(armorPiece)
-    await ctx.send(output)
+    await ctx.send(getFormattedArmorOutput(skill))
 
 
 @bot.command()
@@ -73,4 +38,4 @@ async def menu(ctx):
     await ctx.send('!bees')
 
 
-bot.run(settings.config.TOKEN)
+bot.run(TOKEN)
