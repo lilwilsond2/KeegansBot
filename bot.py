@@ -15,9 +15,19 @@ def armor_lookup(skill: str) -> list:
     :param skill: skill to lookup
     :return: list of armor names
     """
+    apiObjects = getArmors()
+    output = filterArmors(apiObjects, skill)
+    return output
+
+
+def getArmors():
     requestUrl = "https://mhw-db.com/armor?p={\"name\": true, \"skills.skillName\": true, \"skills.level\": true}"
     apiData = requests.get(requestUrl).text
     apiObjects = json.loads(apiData)
+    return apiObjects
+
+
+def filterArmors(apiObjects, skill) -> list:
     filteredArmor = []
     for armorPiece in apiObjects:
         for armorSkill in armorPiece['skills']:
