@@ -9,7 +9,7 @@ description = '''a dumb bot'''
 bot = commands.Bot(command_prefix='!', description=description)
 
 
-def armor_lookup(skill: str):
+def armor_lookup(skill: str) -> list:
     """
     Looks up armor pieces for a skill from mhw-db.com
     :param skill: skill to lookup
@@ -41,7 +41,11 @@ async def hunt(ctx, monsterName: str):
 @bot.command()
 async def armor(ctx, *, skill: str):
     """Finds all armor that has given skill"""
-    await ctx.send(armor_lookup(skill))
+    armorPieces = armor_lookup(skill)
+    output = armorPieces.pop(0)
+    for armorPiece in armorPieces:
+        output += "\n{}".format(armorPiece)
+    await ctx.send(output)
 
 
 @bot.command()
