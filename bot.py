@@ -10,6 +10,11 @@ bot = commands.Bot(command_prefix='!', description=description)
 
 
 def armor_lookup(skill: str):
+    """
+    Looks up armor pieces for a skill from mhw-db.com
+    :param skill: skill to lookup
+    :return: list of armor names
+    """
     requestUrl = "https://mhw-db.com/armor?p={\"name\": true, \"skills.skillName\": true, \"skills.level\": true}"
     apiData = requests.get(requestUrl).text
     apiObjects = json.loads(apiData)
