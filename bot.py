@@ -32,4 +32,10 @@ async def armor(ctx, skill: str):
     """Finds all armor that has given skill"""
     await ctx.send(armor_lookup(skill))
 
+@bot.command()
+async def bees(ctx):
+    """Talks about bees"""
+    await ctx.send('Get on that shit yo!')
+
+
 bot.run(settings.config.TOKEN)
