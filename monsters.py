@@ -14,7 +14,7 @@ def manageMudResistances(monsterInfo, normalResistances):
     mudResistances = monsterInfo['alt']
     for updatedResistance in mudResistances:
         normalResistances[updatedResistance] = normalResistances[updatedResistance] + \
-                                               "({})".format(starsForValues(mudResistances[updatedResistance]))
+                                               "({})".format(starsForValue(mudResistances[updatedResistance]))
     return normalResistances
 
 
@@ -33,11 +33,11 @@ def getNormalResistances(monsterInfo):
     resistances = monsterInfo['normal']
     output = {}
     for resistance in resistances:
-        output[resistance] = starsForValues(resistances[resistance])
+        output[resistance] = starsForValue(resistances[resistance])
     return output
 
 
-def starsForValues(value):
+def starsForValue(value):
     stars = ""
     for x in range(value):
         stars += "\*"
@@ -46,5 +46,4 @@ def starsForValues(value):
 
 
 def handleImmune(stars):
-    stars = "X" if stars == "" else stars
-    return stars
+    return "X" if stars == "" else stars
