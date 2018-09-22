@@ -2,7 +2,8 @@ from helper import getJsonObjectsFromUrl, beautifyList
 
 
 def monsterLookup(monsterName):
-    monsterDataUrl = "https://raw.githubusercontent.com/gatheringhallstudios/MHWorldData/master/source_data/monsters/monster_weaknesses.json"
+    monsterDataUrl = "https://raw.githubusercontent.com/gatheringhallstudios/MHWorldData/master/" \
+                     "source_data/monsters/monster_weaknesses.json"
     monsters = getJsonObjectsFromUrl(monsterDataUrl)
     return monsters[monsterName]
 
@@ -39,7 +40,7 @@ def getNormalResistances(monsterInfo):
 def starsForValues(value):
     stars = ""
     for x in range(value):
-        stars += "*"
+        stars += "\*"
     stars = handleImmune(stars)
     return stars
 
