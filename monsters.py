@@ -1,11 +1,23 @@
+import yaml
+
 from helper import getJsonObjectsFromUrl, beautifyList
 
 
-def monsterLookup(monsterName):
+def monsterShorthandReplace(monsterName):
+    shorthandDict = yaml.load(open("settings/monsterShorthand.yml"))
+    for monster in shorthandDict:
+        if monsterName.lower() in [shorthand.lower() for shorthand in shorthandDict[monster]]:
+            monsterName = monster
+            break
+    return monsterName.lower()
+
+
+def getMonsterData(monsterName):
     monsterDataUrl = "https://raw.githubusercontent.com/gatheringhallstudios/MHWorldData/master/" \
                      "source_data/monsters/monster_weaknesses.json"
-    monsters = getJsonObjectsFromUrl(monsterDataUrl)
-    return monsters[monsterName]
+    monsters: dict = getJsonObjectsFromUrl(monsterDataUrl)
+    monsters = {name.lower(): resistances for name, resistances in monsters.items()}
+    return monsters[monsterShorthandReplace(monsterName)]
 
 
 def manageMudResistances(monsterInfo, normalResistances):
@@ -19,7 +31,7 @@ def manageMudResistances(monsterInfo, normalResistances):
 
 
 def getFormattedMonsterOutput(monsterName):
-    monsterInfo = monsterLookup(monsterName)
+    monsterInfo = getMonsterData(monsterName)
     return beautifyList(getResistances(monsterInfo))
 
 
