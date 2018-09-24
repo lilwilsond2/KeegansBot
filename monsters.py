@@ -33,7 +33,7 @@ def getMonsterId(monsterName):
 
 
 def getMonsterImageUrl(monsterName):
-    return "https://github.com/gatheringhallstudios/MHWorldData/tree/master/" \
+    return "https://raw.githubusercontent.com/gatheringhallstudios/MHWorldData/master/" \
            "images/monster/{}.png".format(getMonsterId(monsterName))
 
 
@@ -51,7 +51,7 @@ def getFormattedMonsterOutput(monsterName):
     officialName = monsterShorthandReplace(monsterName)
     monsterInfo = getMonsterData(officialName)
     return "{}\n{}".format(
-        embedImage(getMonsterImageUrl(officialName), monsterName, ""),
+        getMonsterImageUrl(officialName),
         beautifyList(getResistances(monsterInfo)))
 
 
