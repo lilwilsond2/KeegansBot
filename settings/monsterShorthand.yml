@@ -106,8 +106,8 @@ Bazelgeuse:
   - bazel
 
 Deviljho:
-  -Jho
-  -jho
+  - Jho
+  - jho
 
 Lavasioth:
   - lavasioth
@@ -147,6 +147,7 @@ Kushala Daora:
   - Daora
   - kushala
   - daora
+  - kush
 
 Vaal Hazak:
   - vaal
@@ -154,6 +155,7 @@ Vaal Hazak:
   - Vaal
   - Hazak
 
-Xeno'Jiva:
+Xeno'jiiva:
   - Xeno
   - xeno
+  - jiva

@@ -37,6 +37,13 @@ async def menu(ctx):
     await ctx.send('!hunt')
     await ctx.send('!armor')
     await ctx.send('!bees')
+    await ctx.send('!order')
+
+@bot.command()
+async def order(ctx):
+    """Food skills calculator"""
+    await ctx.send('Under construction, please be patient.')
+
 
 
 bot.run(TOKEN)
