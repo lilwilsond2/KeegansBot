@@ -14,3 +14,7 @@ def beautifyList(list):
     for armorPiece in list:
         output += "\n{}".format(armorPiece)
     return output
+
+
+def embedImage(imageUrl, hoverText, altText):
+    return "![{}]({} {})".format(altText, imageUrl, hoverText)
