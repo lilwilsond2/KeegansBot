@@ -80,5 +80,3 @@ def starsForValue(value):
 def handleImmune(stars):
     return "X" if stars == "" else stars
 
-
-print(getFormattedMonsterOutput("barry"))
