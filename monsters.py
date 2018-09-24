@@ -28,7 +28,7 @@ def getMonsterId(monsterName):
     lines = monsterData.splitlines()
     for line in lines:
         tokens = line.split(",")
-        if tokens[1] == monsterName:
+        if tokens[1].lower() == monsterName:
             return tokens[0]
 
 
@@ -79,3 +79,6 @@ def starsForValue(value):
 
 def handleImmune(stars):
     return "X" if stars == "" else stars
+
+
+print(getFormattedMonsterOutput("barry"))
