@@ -5,4 +5,4 @@ MHW bot that Keegan wanted
 
 !armor (skill) returns all armor pieces that give that skill (including set bonuses)
 
-All the data for this project from [a great repo](https://github.com/gatheringhallstudios/MHWorldData) and we also currently are pulling from [an api](mhw-db.com) that is built around the same data
+All the data for this project from [a great repo](https://github.com/gatheringhallstudios/MHWorldData) and we are currently are pulling from [an api](mhw-db.com) that is pretty nifty as well
