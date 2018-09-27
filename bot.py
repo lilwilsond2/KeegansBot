@@ -1,7 +1,8 @@
 from discord.ext import commands
 
 from armor import getFormattedArmorOutput
-from monsters import getFormattedMonsterOutput
+from helper import downloadLatestData
+from monsters import Monster
 from settings.config import TOKEN
 
 description = '''a dumb bot'''
@@ -10,13 +11,14 @@ bot = commands.Bot(command_prefix='!', description=description)
 
 @bot.event
 async def on_ready():
+    downloadLatestData()
     print('hi')
 
 
 @bot.command()
 async def hunt(ctx, *, monsterName: str):
     """Looks up a monster and displays it's weaknesses."""
-    await ctx.send(getFormattedMonsterOutput(monsterName))
+    await ctx.send(Monster(monsterName))
 
 
 @bot.command()
@@ -39,11 +41,12 @@ async def menu(ctx):
     await ctx.send('!bees')
     await ctx.send('!order')
 
+
 @bot.command()
 async def order(ctx):
     """Food skills calculator"""
     await ctx.send('Under construction, please be patient.')
 
 
-
+downloadLatestData()
 bot.run(TOKEN)
