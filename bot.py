@@ -1,6 +1,7 @@
 from discord.ext import commands
 
 from armor import getFormattedArmorOutput
+from helper import downloadLatestData
 from monsters import getFormattedMonsterOutput
 from settings.config import TOKEN
 
@@ -10,6 +11,7 @@ bot = commands.Bot(command_prefix='!', description=description)
 
 @bot.event
 async def on_ready():
+    downloadLatestData()
     print('hi')
 
 
@@ -39,11 +41,12 @@ async def menu(ctx):
     await ctx.send('!bees')
     await ctx.send('!order')
 
+
 @bot.command()
 async def order(ctx):
     """Food skills calculator"""
     await ctx.send('Under construction, please be patient.')
 
 
-
+downloadLatestData()
 bot.run(TOKEN)
