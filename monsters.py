@@ -1,10 +1,26 @@
 import requests
 import yaml
 
-from helper import getJsonObjectsFromUrl, beautifyList, embedImage
+from helper import getJsonObjectsFromUrl, beautifyList
+
+WEAKNESSES_JSON = "https://raw.githubusercontent.com/gatheringhallstudios/MHWorldData/master/" \
+                  "source_data/monsters/monster_weaknesses.json"
+
+MONSTER_BASE_CSV = "https://raw.githubusercontent.com/gatheringhallstudios/MHWorldData/master/" \
+                   "source_data/monsters/monster_base.csv"
+
+TRIBAL_IMAGE = "https://raw.githubusercontent.com/gatheringhallstudios/MHWorldData/master/images/monster/{}.png"
 
 
-def monsterShorthandReplace(monsterName):
+def getFormattedMonsterOutput(monsterName):
+    officialName = getOfficialMonsterName(monsterName)
+    monsterInfo = getMonsterData(officialName)
+    return "{}\n{}".format(
+            getMonsterImageUrl(officialName),
+            beautifyList(getResistances(monsterInfo)))
+
+
+def getOfficialMonsterName(monsterName):
     shorthandDict = yaml.load(open("settings/monsterShorthand.yml"))
     for monster in shorthandDict:
         if monsterName.lower() in [shorthand.lower() for shorthand in shorthandDict[monster]]:
@@ -14,17 +30,13 @@ def monsterShorthandReplace(monsterName):
 
 
 def getMonsterData(monsterName):
-    monsterDataUrl = "https://raw.githubusercontent.com/gatheringhallstudios/MHWorldData/master/" \
-                     "source_data/monsters/monster_weaknesses.json"
-    monsters: dict = getJsonObjectsFromUrl(monsterDataUrl)
+    monsters: dict = getJsonObjectsFromUrl(WEAKNESSES_JSON)
     monsters = {name.lower(): resistances for name, resistances in monsters.items()}
     return monsters[monsterName]
 
 
 def getMonsterId(monsterName):
-    monsterDataUrl = "https://raw.githubusercontent.com/gatheringhallstudios/MHWorldData/master/" \
-                     "source_data/monsters/monster_base.csv"
-    monsterData = requests.get(monsterDataUrl).text
+    monsterData = requests.get(MONSTER_BASE_CSV).text
     lines = monsterData.splitlines()
     for line in lines:
         tokens = line.split(",")
@@ -33,26 +45,7 @@ def getMonsterId(monsterName):
 
 
 def getMonsterImageUrl(monsterName):
-    return "https://raw.githubusercontent.com/gatheringhallstudios/MHWorldData/master/" \
-           "images/monster/{}.png".format(getMonsterId(monsterName))
-
-
-def manageMudResistances(monsterInfo, normalResistances):
-    if 'alt' not in monsterInfo:
-        return normalResistances
-    mudResistances = monsterInfo['alt']
-    for updatedResistance in mudResistances:
-        normalResistances[updatedResistance] = normalResistances[updatedResistance] + \
-                                               "({})".format(starsForValue(mudResistances[updatedResistance]))
-    return normalResistances
-
-
-def getFormattedMonsterOutput(monsterName):
-    officialName = monsterShorthandReplace(monsterName)
-    monsterInfo = getMonsterData(officialName)
-    return "{}\n{}".format(
-        getMonsterImageUrl(officialName),
-        beautifyList(getResistances(monsterInfo)))
+    return TRIBAL_IMAGE.format(getMonsterId(monsterName))
 
 
 def getResistances(monsterInfo) -> list:
@@ -69,6 +62,16 @@ def getNormalResistances(monsterInfo):
     return output
 
 
+def manageMudResistances(monsterInfo, resistances):
+    if 'alt' not in monsterInfo:
+        return resistances
+    mudResistances = monsterInfo['alt']
+    for updatedResistance in mudResistances:
+        resistances[updatedResistance] = resistances[updatedResistance] + \
+                                         "({})".format(starsForValue(mudResistances[updatedResistance]))
+    return resistances
+
+
 def starsForValue(value):
     stars = ""
     for x in range(value):
@@ -79,4 +82,3 @@ def starsForValue(value):
 
 def handleImmune(stars):
     return "X" if stars == "" else stars
-
