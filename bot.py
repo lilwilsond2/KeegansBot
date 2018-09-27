@@ -48,5 +48,4 @@ async def order(ctx):
     await ctx.send('Under construction, please be patient.')
 
 
-downloadLatestData()
 bot.run(TOKEN)
