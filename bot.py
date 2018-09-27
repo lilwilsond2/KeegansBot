@@ -2,7 +2,7 @@ from discord.ext import commands
 
 from armor import getFormattedArmorOutput
 from helper import downloadLatestData
-from monsters import Monster
+from monsters import getFormattedMonsterOutput
 from settings.config import TOKEN
 
 description = '''a dumb bot'''
@@ -18,7 +18,7 @@ async def on_ready():
 @bot.command()
 async def hunt(ctx, *, monsterName: str):
     """Looks up a monster and displays it's weaknesses."""
-    await ctx.send(Monster(monsterName))
+    await ctx.send(getFormattedMonsterOutput(monsterName))
 
 
 @bot.command()

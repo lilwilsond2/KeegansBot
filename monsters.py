@@ -31,8 +31,15 @@ ALT_RESIST_SQL = "select " \
 TRIBAL_IMAGE = "https://raw.githubusercontent.com/gatheringhallstudios/MHWorldData/master/images/monster/{}.png"
 
 
-def queryByMonsterName(sql, officialName):
-    return getDatabaseConnection().execute(sql + FROM_MONSTER_BY_NAME, {"monsterName": officialName})
+def getFormattedMonsterOutput(monsterName):
+    officialName = getOfficialMonsterName(monsterName)
+    return "{}\n{}".format(
+            getMonsterImageUrl(
+                    getId(officialName)),
+            beautifyList(
+                    mergeResistances(
+                            getNormalResistances(officialName),
+                            getAltResistances(officialName))))
 
 
 def getOfficialMonsterName(monsterName):
@@ -42,6 +49,51 @@ def getOfficialMonsterName(monsterName):
             monsterName = monster
             break
     return monsterName.lower()
+
+
+def getId(officialName):
+    return getDatabaseConnection().execute(ID, [officialName]).fetchone()[0]
+
+
+def getMonsterImageUrl(id1):
+    return TRIBAL_IMAGE.format(id1)
+
+
+def queryByMonsterName(sql, officialName):
+    return getDatabaseConnection().execute(sql + FROM_MONSTER_BY_NAME, {"monsterName": officialName})
+
+
+def getNormalResistances(officialName):
+    query = queryByMonsterName(NORMAL_RESIST_SQL, officialName)
+    results = query.fetchone()
+    return {query.description[x][0]: results[x] for x in range(len(query.description))}
+
+
+def getAltResistances(officialName):
+    if not hasAltResistances(officialName):
+        return {}
+    query = queryByMonsterName(ALT_RESIST_SQL, officialName)
+    results = query.fetchone()
+    return {query.description[x][0]: results[x] for x in range(len(query.description))}
+
+
+def mergeResistances(normalResistances, altResistances):
+    if altResistances == {}:
+        pass
+    output = []
+    for key, normal in normalResistances.items():
+        if key in altResistances:
+            output.append("{}: {} ({})".format(
+                    key,
+                    starsForValue(normal),
+                    starsForValue(altResistances[key])))
+        else:
+            output.append("{}: {}".format(key, starsForValue(normal)))
+    return output
+
+
+def hasAltResistances(officialName):
+    return queryByMonsterName("select has_alt_weakness ", officialName).fetchone()[0]
 
 
 def starsForValue(value):
@@ -54,52 +106,3 @@ def starsForValue(value):
 
 def handleImmune(stars):
     return "X" if stars == "" else stars
-
-
-class Monster:
-    def __init__(self, name):
-        self.officialName = getOfficialMonsterName(name)
-        self.id = self.getId()
-        self.icon = self.getMonsterImageUrl()
-        self.normalResistances = self.getNormalResistances()
-        self.altResistances = self.getAltResistances()
-
-    def __str__(self):
-        return "{}\n{}".format(
-                self.icon,
-                beautifyList(self.mergeResistances()))
-
-    def getNormalResistances(self):
-        query = queryByMonsterName(NORMAL_RESIST_SQL, self.officialName)
-        results = query.fetchone()
-        return {query.description[x][0]: results[x] for x in range(len(query.description))}
-
-    def getAltResistances(self):
-        if not self.hasAltResistances():
-            return {}
-        query = queryByMonsterName(ALT_RESIST_SQL, self.officialName)
-        results = query.fetchone()
-        return {query.description[x][0]: results[x] for x in range(len(query.description))}
-
-    def mergeResistances(self):
-        if self.altResistances == {}:
-            pass
-        output = []
-        for key, normal in self.normalResistances.items():
-            if key in self.altResistances:
-                output.append("{}: {} ({})".format(
-                        key,
-                        starsForValue(normal),
-                        starsForValue(self.altResistances[key])))
-            else:
-                output.append("{}: {}".format(key, starsForValue(normal)))
-        return output
-
-    def getId(self):
-        return getDatabaseConnection().execute(ID, [self.officialName]).fetchone()[0]
-
-    def getMonsterImageUrl(self):
-        return TRIBAL_IMAGE.format(self.id)
-
-    def hasAltResistances(self):
-        return queryByMonsterName("select has_alt_weakness ", self.officialName).fetchone()[0]
